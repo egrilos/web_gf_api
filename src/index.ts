@@ -23,10 +23,11 @@ process.on("SIGINT", async () => {
   try {
     await mongoose.connection.close();
     logger.info("mongoose connection is disconnected");
+    process.exit(0);
   } catch (err) {
     logger.error(`Error while closing mongoose connection: ${err}`);
+    process.exit(1);
   }
-  process.exit(0);
 });
 
 // mongodb on debug mode

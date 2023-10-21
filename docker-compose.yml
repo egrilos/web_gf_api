@@ -1,0 +1,25 @@
+version: "3"
+services:
+  api:
+    build: .
+    command: sh -c "npm run build && npm run start"
+    working_dir: /home/node/app
+    environment:
+      - NODE_ENV=production
+      - PORT=8080
+      - MONGO_URL="mongodb://db:27017/my-message-app"
+      - ACCESS_TOKEN_SECRET="123456789"
+      - REFRESH_TOKEN_SECRET="987654321"
+    expose:
+      - "3000"
+    ports:
+      - "8080:8080"
+  db:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - db-data:/db
+
+volumes:
+  db-data:
