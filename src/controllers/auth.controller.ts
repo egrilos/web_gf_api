@@ -1,6 +1,5 @@
 import createHttpError from "http-errors";
 
-import { UserModel } from "../models/index.js";
 import { createUser, signUser } from "../services/auth.service.js";
 import {
   generateToken,
@@ -15,8 +14,8 @@ import {
   UserLoginDTO,
   TokenPayload,
 } from "../types/index.js";
+
 import { TokenRevokingPayload } from "../types/token.type.js";
-import { clear } from "console";
 
 export const register = async (req, res, next) => {
   try {
@@ -36,11 +35,6 @@ export const register = async (req, res, next) => {
 
     // will take care of validation and creating user
     const newUser: UserDb = await createUser(sentUser);
-
-    // will take care of sending email
-    // <------------------------------->
-    // HERE
-    // <------------------------------->
 
     const accessToken = await generateToken(
       { userId: newUser._id },
@@ -172,6 +166,9 @@ export const logout = async (req, res, next) => {
 export const refreshToken = async (req, res, next) => {
   try {
     const refreshToken = req.cookies.refreshToken;
+
+    console.log(refreshToken);
+
     if (!refreshToken) {
       throw createHttpError.Unauthorized("Please, login first.");
     }
@@ -185,16 +182,10 @@ export const refreshToken = async (req, res, next) => {
       process.env.REFRESH_TOKEN_SECRET
     );
 
-    const payload: TokenPayload = {
-      userId: check.userId,
-      iat: check.iat,
-      exp: check.exp,
-    };
-
     const accessToken = await generateToken(
       { userId: check.userId },
-      process.env.ACCESS_TOKEN_LIFETIME,
-      process.env.ACCESS_TOKEN_SECRET
+      process.env.ACCESS_TOKEN_LIFETIME || "15m",
+      process.env.ACCESS_TOKEN_SECRET || "30d"
     );
 
     res.json({ accessToken });
