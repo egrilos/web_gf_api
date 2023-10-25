@@ -7,9 +7,11 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=8080
-      - MONGO_URL="mongodb://db:27017/my-message-app"
+      - DATABASE_URL="mongodb://db:27017/my-message-app"
       - ACCESS_TOKEN_SECRET="123456789"
       - REFRESH_TOKEN_SECRET="987654321"
+      - ACCESS_TOKEN_LIFETIME="15m"
+      - REFRESH_TOKEN_LIFETIME="30d"
     expose:
       - "3000"
     ports:
